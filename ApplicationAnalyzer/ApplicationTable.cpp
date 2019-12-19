@@ -19,7 +19,8 @@ bool ApplicationTable::UpdateTableData()
 		return false;
 	
 	PrintList();
-	
+
+	return true;
 }
 /// <summary>
 /// This function create application list using the process snap handle to get all active process
@@ -29,11 +30,15 @@ bool ApplicationTable::UpdateTableData()
 bool ApplicationTable::CreateApplicationList(HANDLE hProcessSnap)
 {
 	PROCESSENTRY32 processEntry32;
+	MODULEENTRY32W processInfoExtention;
+
+
 
 	processEntry32.dwSize = sizeof(PROCESSENTRY32W);
+	processInfoExtention.dwSize = sizeof(MODULEENTRY32W);
 
 	//get first process. if fail exit function.
-	if (!Process32First(hProcessSnap, &processEntry32))
+	if (!Process32First(hProcessSnap, &processEntry32) && !Module32First(hProcessSnap,& processInfoExtention))
 	{
 		cout << "Process32First"; // show cause of failure
 		CloseHandle(hProcessSnap);          // clean the snapshot object
@@ -43,7 +48,7 @@ bool ApplicationTable::CreateApplicationList(HANDLE hProcessSnap)
 	//create the list
 	do
 	{
-		Application tempApp = Application(processEntry32);
+		Application tempApp = Application(processEntry32, processInfoExtention);
 		_applicationTable.push_back(tempApp);
 	} while (Process32Next(hProcessSnap, &processEntry32));
 

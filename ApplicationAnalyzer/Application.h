@@ -7,9 +7,10 @@
 class Application
 {
 public:
-	Application(PROCESSENTRY32 processEntry);
+	Application(PROCESSENTRY32 processEntry, MODULEENTRY32W moduleEntry);
 	DWORD GetId();
 	WCHAR* GetName();
+	DWORD GetNumOfThreads();
 
 	~Application();
 
@@ -17,8 +18,9 @@ public:
 
 private:
 	DWORD _id;
-	std::string _name;
-	WCHAR _path [260];
+	WCHAR _path [MAX_PATH];
+	DWORD _numOfThreads;
+	WCHAR _name [MAX_PATH];
 	//cpu usage, memory usage, user name, network usage,
 
 };
